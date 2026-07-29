@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="no">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CineAI</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://googleapis.com" rel="stylesheet" />
+  </head>
+  <body>
+    <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+
+    <div class="sidebar" id="sidebar">
+      <h2>CineAI 🎬</h2>
+      <a href="index.html">🏠 Home</a>
+      <a href="#">Trending</a>
+      <a href="#">Top Rated</a>
+      <a href="#">Movies</a>
+      <a href="#">TV Shows</a>
+      <a href="#">Watchlist</a>
+      <a href="Profile.html">Profile</a>
+      <div class="sidebar-divider"></div>
+      <a href="login.html">Login</a>
+      <a href="register.html">Register</a>
+    </div>
+
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <header class="top-header">
+      <h1 onclick="goHome()">CineAI</h1>
+      <div class="big-search">
+        <input id="searchInput" placeholder="Search movies and series..." />
+        <button onclick="searchMovies()">🔍</button>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <section>
+        <h2 class="section-title">Popular Movies</h2>
+        <div id="movies" class="movie-row"></div>
+      </section>
+
+      <section>
+        <h2 class="section-title">Trending Now</h2>
+        <div id="trending" class="movie-row"></div>
+      </section>
+
+      <section>
+        <h2 class="section-title">Top Rated</h2>
+        <div id="top-rated" class="movie-row"></div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

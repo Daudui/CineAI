@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Profile - CineAI</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="profile-body">
+    <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+
+    <div class="sidebar" id="sidebar">
+      <h2>Menu</h2>
+      <a href="index.html">Home</a>
+      <a href="Profile.html">Profile</a>
+      <div class="sidebar-divider"></div>
+      <a href="#" onclick="handleLogout()">Log out</a>
+    </div>
+
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <div class="profile-container">
+      <div class="profile-header">
+        <h1>My Profile</h1>
+        <h2>Manage your watchlist and account settings</h2>
+      </div>
+
+      <div class="profile-card">
+        <p class="user-label">Logged in as</p>
+        <h2 id="profileUsername">Guest</h2>
+      </div>
+
+      <div class="profile-card">
+        <h2 class="card-title">My Watchlist</h2>
+        <p id="emptyWatchlistText" class="empty-text">
+          Your watchlist is empty.
+        </p>
+
+        <div id="watchlistContainer"></div>
+      </div>
+
+      <div class="profile-card">
+        <h2 class="card-title">Change Password</h2>
+        <div class="form-group">
+          <input type="password" id="oldPassword" placeholder="Old Password" />
+          <input
+            type="password"
+            id="newPassword"
+            placeholder="New Password (min. 8 chars, 1 number)"
+          />
+          <button class="btn btn-primary" onclick="changePassword()">
+            Update Password
+          </button>
+        </div>
+      </div>
+
+      <div class="profile-actions">
+        <button class="btn btn-secondary" onclick="goHome()">
+          Back to Home
+        </button>
+        <button class="btn btn-secondary" onclick="handleLogout()">
+          Log Out
+        </button>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
