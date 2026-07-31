@@ -1,10 +1,10 @@
-[build]
+  [build]
   functions = "netlify/functions"
 
 # Sender alt som starter på /api/ direkte til funksjonen vår i det skjulte
 [[redirects]]
   from = "/api/*"
-  to = "/.netlify/functions/tmdb?path=/:splat"
+ to = "/.netlify/functions/getmovies?path=/:splat"
   status = 200
   force = true
 
