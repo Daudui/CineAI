@@ -1,56 +1,126 @@
 <!DOCTYPE html>
-<html lang="no">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CineAI</title>
+    <title>CineAI - Stream Movies & Series</title>
     <link rel="stylesheet" href="style.css" />
-    <link href="https://googleapis.com" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
   </head>
   <body>
-    <button class="menu-btn" onclick="toggleSidebar()">☰</button>
-
-    <div class="sidebar" id="sidebar">
-      <h2>CineAI 🎬</h2>
-      <a href="index.html">🏠 Home</a>
-      <a href="#">Trending</a>
-      <a href="#">Top Rated</a>
-      <a href="#">Movies</a>
-      <a href="#">TV Shows</a>
-      <a href="#">Watchlist</a>
-      <a href="Profile.html">Profile</a>
-      <div class="sidebar-divider"></div>
-      <a href="login.html">Login</a>
-      <a href="register.html">Register</a>
-    </div>
-
-    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
-
-    <header class="top-header">
-      <h1 onclick="goHome()">CineAI</h1>
-      <div class="big-search">
-        <input id="searchInput" placeholder="Search movies and series..." />
-        <button onclick="searchMovies()">🔍</button>
+    <header class="navbar">
+      <div class="nav-left">
+        <div class="logo" onclick="goHome()">
+          <i class="fa-solid fa-play logo-icon"></i>
+          <span>Cine<b>AI</b></span>
+        </div>
+        <nav class="nav-links">
+          <a href="index.html" class="active" id="navHome"
+            ><i class="fa-solid fa-house"></i> HOME</a
+          >
+          <a href="#" id="navMovies" onclick="filterCategory('movie')"
+            ><i class="fa-solid fa-film"></i> MOVIES</a
+          >
+          <a href="#" id="navSeries" onclick="filterCategory('tv')"
+            ><i class="fa-solid fa-tv"></i> SERIES</a
+          >
+          <a href="#" id="navSearch" onclick="toggleSearchInput()"
+            ><i class="fa-solid fa-magnifying-glass"></i> SEARCH</a
+          >
+        </nav>
       </div>
+
+      <div class="search-box" id="searchBox" style="display: none">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search movies or series..."
+          onkeyup="handleSearch(event)"
+        />
+        <button onclick="executeSearch()">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </div>
+
+      <div class="nav-right"></div>
     </header>
 
-    <main class="main-content">
-      <section>
-        <h2 class="section-title">Popular Movies</h2>
-        <div id="movies" class="movie-row"></div>
+    <section class="hero-banner" id="heroBanner">
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <div class="badge"><i class="fa-solid fa-tv"></i> Featured</div>
+        <h1 class="hero-title">STAR TREK: STRANGE NEW WORLDS</h1>
+        <p class="hero-meta">TV-14 • 2022 • Sci-Fi & Fantasy, Drama</p>
+        <p class="hero-description">
+          Follow Captain Christopher Pike and the crew of the USS Enterprise as
+          they explore new worlds throughout the galaxy.
+        </p>
+        <div class="hero-buttons">
+          <button class="btn btn-watch">
+            <i class="fa-solid fa-play"></i> Watch Now
+          </button>
+          <button class="btn btn-info">
+            <i class="fa-solid fa-circle-info"></i> More Info
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <main class="main-container" id="mainContainer">
+      <section class="movie-section">
+        <div class="section-header">
+          <h2 id="sectionTitle1">Trending</h2>
+        </div>
+        <div class="movie-row" id="trending"></div>
       </section>
 
-      <section>
-        <h2 class="section-title">Trending Now</h2>
-        <div id="trending" class="movie-row"></div>
+      <section class="movie-section" id="section2">
+        <div class="section-header">
+          <h2 id="sectionTitle2">Popular</h2>
+        </div>
+        <div class="movie-row" id="movies"></div>
       </section>
 
-      <section>
-        <h2 class="section-title">Top Rated</h2>
-        <div id="top-rated" class="movie-row"></div>
+      <section class="movie-section" id="section3">
+        <div class="section-header">
+          <h2 id="sectionTitle3">Top Rated</h2>
+        </div>
+        <div class="movie-row" id="top-rated"></div>
+      </section>
+
+      <section class="movie-section">
+        <div class="section-header">
+          <h2>Popular Actors</h2>
+        </div>
+        <div class="movie-row" id="popular-actors"></div>
       </section>
     </main>
 
-    <script src="script.js"></script>
+    <div id="movieModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <div class="modal-body">
+          <img id="modalPoster" src="" alt="Poster" />
+          <div class="modal-info">
+            <h2 id="modalTitle">Title</h2>
+            <p id="modalRating" class="modal-rating"></p>
+            <p id="modalOverview" class="modal-overview"></p>
+            <div id="trailerContainer" class="trailer-container"></div>
+            <button
+              id="modalWatchlistBtn"
+              class="btn btn-primary"
+              style="margin-top: 15px"
+            >
+              <i class="fa-solid fa-plus"></i> Add to Watchlist
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
   </body>
 </html>
