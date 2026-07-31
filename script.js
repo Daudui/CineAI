@@ -1,4 +1,3 @@
-// Nå går alle spørringer via vår egen Netlify-redirect!
 const API_BASE = "/api";
 
 /* --- 1. SJEKK HVA SOM SKAL LASTES NÅR SIDEN ÅPNES --- */
@@ -242,7 +241,89 @@ function removeFromWatchlist(index) {
   loadWatchlist();
 }
 
-/* --- 5. POPULAR ACTORS FUNKSJONER --- */
+/* --- 5. DEDIKERT AI-SIDE FUNKSJONALITET --- */
+function openAIPage() {
+  document
+    .querySelectorAll(".nav-links a")
+    .forEach((a) => a.classList.remove("active"));
+  const aiNav = document.getElementById("navAI");
+  if (aiNav) aiNav.classList.add("active");
+
+  const hero = document.getElementById("heroBanner");
+  if (hero) hero.style.display = "none";
+
+  const mainContainer = document.getElementById("mainContainer");
+  if (!mainContainer) return;
+
+  mainContainer.innerHTML = `
+    <section class="ai-page-container">
+      <div class="ai-card">
+        <div class="ai-header">
+          <i class="fa-solid fa-wand-magic-sparkles ai-icon"></i>
+          <h2>CineAI Assistant</h2>
+        </div>
+        <p style="color: var(--text-muted); margin-bottom: 20px;">
+          Fortell oss hva du har lyst til å se på, så analyserer vår AI databasen for deg!
+        </p>
+        <div class="ai-input-group">
+          <input type="text" id="aiPrompt" placeholder="f.eks. 'mørk sci-fi', 'morsom komedie', 'spennende thriller'..." />
+          <button onclick="runAISearch()" class="btn btn-primary" id="aiBtn">
+            <i class="fa-solid fa-robot"></i> Generer Anbefalinger
+          </button>
+        </div>
+      </div>
+
+      <div class="movie-section" style="margin-top: 40px;">
+        <div class="section-header">
+          <h2 id="aiResultTitle">AI Anbefalte Filmer</h2>
+        </div>
+        <div class="movie-row" id="aiResultsRow">
+          <p style="color: var(--text-muted);">Skriv inn et ønske ovenfor for å hente AI-forslag.</p>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+async function runAISearch() {
+  const input = document.getElementById("aiPrompt");
+  const row = document.getElementById("aiResultsRow");
+  const btn = document.getElementById("aiBtn");
+
+  if (!input || !input.value.trim()) {
+    alert("Vennligst skriv inn hva du har lyst til å se!");
+    return;
+  }
+
+  const query = input.value.trim();
+
+  btn.disabled = true;
+  btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Analyserer...`;
+  row.innerHTML =
+    "<p style='color: var(--accent-color);'>🤖 CineAI søker gjennom filmdatabasen...</p>";
+
+  try {
+    const response = await fetch(
+      `${API_BASE}/search/multi?query=${encodeURIComponent(query)}`
+    );
+    const data = await response.json();
+
+    if (data.results && data.results.length > 0) {
+      renderMovies(data.results, "aiResultsRow");
+    } else {
+      row.innerHTML = `<p style='color: var(--text-muted);'>🤖 Ingen filmer matchet "${query}". Prøv et annet søkeord!</p>`;
+    }
+  } catch (err) {
+    console.error("AI Page Error:", err);
+    row.innerHTML =
+      "<p style='color: #ef4444;'>Det oppstod en feil ved henting av forslag.</p>";
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `<i class="fa-solid fa-robot"></i> Generer Anbefalinger`;
+  }
+}
+
+/* --- 6. POPULAR ACTORS FUNKSJONER --- */
 async function getPopularActors() {
   const container = document.getElementById("popular-actors");
   if (!container) return;
@@ -290,7 +371,9 @@ async function openActorModal(actorId) {
     const actorRes = await fetch(`${API_BASE}/person/${actorId}`);
     const actor = await actorRes.json();
 
-    const creditsRes = await fetch(`${API_BASE}/person/${actorId}/movie_credits`);
+    const creditsRes = await fetch(
+      `${API_BASE}/person/${actorId}/movie_credits`
+    );
     const credits = await creditsRes.json();
 
     const topMovies = credits.cast
@@ -339,7 +422,7 @@ async function openActorModal(actorId) {
   }
 }
 
-/* --- 6. POPUP / MODAL MED TRAILER --- */
+/* --- 7. POPUP / MODAL MED TRAILER --- */
 async function openMovieModal(id, type, title, posterPath, rating, overview) {
   const modal = document.getElementById("movieModal");
   if (!modal) return;
@@ -407,7 +490,7 @@ window.onclick = function (event) {
   }
 };
 
-/* --- 7. NAVIGASJON OG SØK --- */
+/* --- 8. NAVIGASJON OG SØK --- */
 function toggleSearchInput() {
   const searchBox = document.getElementById("searchBox");
   if (!searchBox) return;
@@ -426,7 +509,9 @@ async function executeSearch() {
   if (!query) return;
 
   try {
-    const response = await fetch(`${API_BASE}/search/multi?query=${encodeURIComponent(query)}`);
+    const response = await fetch(
+      `${API_BASE}/search/multi?query=${encodeURIComponent(query)}`
+    );
     const data = await response.json();
 
     const hero = document.getElementById("heroBanner");
