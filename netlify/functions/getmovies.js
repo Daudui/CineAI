@@ -1,48 +1,64 @@
 // netlify/functions/getmovies.js
-const http = require("https");
+const https = require("https");
 
 exports.handler = async function (event, context) {
   try {
-    const endpoint = event.queryStringParameters.endpoint || "/movie/popular";
+    // Henter endepunktet fra frontend, f.eks. "movie/popular"
+    let endpoint = event.queryStringParameters.endpoint || "movie/popular";
     const apiKey = process.env.PRIVATE_API_KEY;
 
     if (!apiKey) {
       return {
         statusCode: 500,
-        body: JSON.stringify({ error: "PRIVATE_API_KEY mangler på Netlify!" }),
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+        body: JSON.stringify({
+          error: "PRIVATE_API_KEY mangler i Netlify dashboard!",
+        }),
       };
     }
 
-    // Vi bruker en stabil innebygd HTTPS-forespørsel for å være 100% sikre på Node-kompatibilitet
+    // Vasker bort eventuelle skråstreker på starten av endepunktet
+    endpoint = endpoint.replace(/^\/+/, "");
+
+    // Bygger den korrekte URL-en til TMDB
     const url = `https://themoviedb.org{endpoint}?api_key=${apiKey}`;
 
-    const fetchData = () => {
-      return new Promise((resolve, reject) => {
-        http
-          .get(url, (res) => {
-            let data = "";
-            res.on("data", (chunk) => (data += chunk));
-            res.on("end", () =>
-              resolve({ statusCode: res.statusCode, body: data })
-            );
-          })
-          .on("error", (err) => reject(err));
-      });
-    };
+    // Vi bruker en Promise for å hente dataen stabilt via https-modulen
+    const movieData = await new Promise((resolve, reject) => {
+      https
+        .get(url, (res) => {
+          let rawData = "";
+          res.on("data", (chunk) => {
+            rawData += chunk;
+          });
+          res.on("end", () => {
+            resolve({ statusCode: res.statusCode, body: rawData });
+          });
+        })
+        .on("error", (e) => {
+          reject(e);
+        });
+    });
 
-    const tmdbResponse = await fetchData();
-
+    // Returnerer dataen tilbake til din script.js frontend
     return {
-      statusCode: tmdbResponse.statusCode,
+      statusCode: movieData.statusCode,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*", // Sikrer mot CORS-blokkering
+        "Access-Control-Allow-Origin": "*", // Forhindrer CORS-feil i nettleseren
       },
-      body: tmdbResponse.body,
+      body: movieData.body,
     };
   } catch (error) {
     return {
       statusCode: 500,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
       body: JSON.stringify({ error: error.message }),
     };
   }
