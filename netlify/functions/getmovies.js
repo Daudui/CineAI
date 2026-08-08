@@ -6,9 +6,8 @@ exports.handler = async function (event, context) {
     const apiKey = process.env.PRIVATE_API_KEY;
 
     // 2. Corrected TMDB API URL with api subdomain, version 3, and proper variable syntax
-    const response = await fetch(
-      `https://themoviedb.org{endpoint}?api_key=${apiKey}`
-    );
+    const response = await fetch(`https://themoviedb.org{endpoint}?api_key=${apiKey}`);
+
 
     if (!response.ok) {
       return { statusCode: response.status, body: "TMDB API request failed" };
