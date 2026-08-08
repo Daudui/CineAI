@@ -1,15 +1,3 @@
   [build]
+  publish = "/" # Your root HTML files are right in the main directory
   functions = "netlify/functions"
-
-# Sender alt som starter på /api/ direkte til funksjonen vår i det skjulte
-[[redirects]]
-  from = "/api/*"
- to = "/.netlify/functions/getmovies?path=/:splat"
-  status = 200
-  force = true
-
-# Fallback: Hvis noen prøver å gå til en side som ikke finnes, send dem hjem med 404
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 404

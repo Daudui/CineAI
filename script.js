@@ -1,4 +1,4 @@
-const API_BASE = "/api";
+const API_BASE = "/.netlify/functions/getmovies?endpoint=";
 
 /* --- 1. SJEKK HVA SOM SKAL LASTES NÅR SIDEN ÅPNES --- */
 window.onload = function () {
