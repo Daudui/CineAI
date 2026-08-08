@@ -9,16 +9,18 @@ exports.handler = async function (event, context) {
     if (!apiKey) {
       return {
         statusCode: 500,
-        body: JSON.stringify({ error: "API-nøkkel mangler!" }),
+        body: JSON.stringify({
+          error: "PRIVATE_API_KEY mangler i Netlify-dashboardet!",
+        }),
       };
     }
 
-    // Vask bort eventuelle skråstreker foran
+    // Rens unna eventuelle skråstreker foran
     endpoint = endpoint.replace(/^\/+/, "");
 
     const url = `https://themoviedb.org{endpoint}?api_key=${apiKey}`;
 
-    // Vi bruker en stabil, rå HTTPS-forespørsel for å omgå Node sin ustabile fetch
+    // Vi tvinger forespørselen gjennom med Node sin egen HTTPS-klient
     const getTMDBData = () => {
       return new Promise((resolve, reject) => {
         https
@@ -46,11 +48,15 @@ exports.handler = async function (event, context) {
       statusCode: result.statusCode,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*", // Forhindrer CORS-blokkering på frontend
+        "Access-Control-Allow-Origin": "*", // Hindrer CORS-feil i nettleseren
+        "Access-Control-Allow-Headers": "Content-Type",
       },
       body: result.body,
     };
   } catch (error) {
-    return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: "Server krasjet: " + error.message }),
+    };
   }
 };
