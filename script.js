@@ -86,6 +86,10 @@ async function getMovies(endpoint, containerId) {
   try {
     const response = await fetch(`${API_BASE}${endpoint}`);
     const data = await response.json();
+
+    // 💡 LEGG TIL DENNE LINJEN FOR Å SE SVARET:
+    console.log("Data mottatt for " + containerId + ":", data);
+
     renderMovies(data.results, containerId);
   } catch (error) {
     console.error("Error fetching data:", error);
